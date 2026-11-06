@@ -1,0 +1,118 @@
+@Backend_HostAddress = http://localhost:5282
+
+GET {{Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### ---------- BRAND: casos correctos ----------
+
+### Listar marcas (200)
+GET {{Backend_HostAddress}}/api/Brand
+Accept: application/json
+
+### Crear marca (201)
+POST {{Backend_HostAddress}}/api/Brand
+Content-Type: application/json
+
+{
+  "name": "Corona"
+}
+
+### Obtener marca por id (200)
+GET {{Backend_HostAddress}}/api/Brand/1
+Accept: application/json
+
+### Actualizar marca (200)
+PUT {{Backend_HostAddress}}/api/Brand/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Corona Extra"
+}
+
+### Cervezas de una marca (200)
+GET {{Backend_HostAddress}}/api/Brand/1/beers
+Accept: application/json
+
+### ---------- BRAND: casos de error ----------
+
+### Nombre vacio (400)
+POST {{Backend_HostAddress}}/api/Brand
+Content-Type: application/json
+
+{
+  "name": ""
+}
+
+### Nombre demasiado corto (400)
+POST {{Backend_HostAddress}}/api/Brand
+Content-Type: application/json
+
+{
+  "name": "A"
+}
+
+### Nombre duplicado (400): ejecutar despues de crear "Corona Extra"
+POST {{Backend_HostAddress}}/api/Brand
+Content-Type: application/json
+
+{
+  "name": "Corona Extra"
+}
+
+### Id de ruta distinto al del cuerpo (400)
+PUT {{Backend_HostAddress}}/api/Brand/1
+Content-Type: application/json
+
+{
+  "id": 2,
+  "name": "Modelo"
+}
+
+### Id inexistente: obtener (404)
+GET {{Backend_HostAddress}}/api/Brand/9999
+Accept: application/json
+
+### Id inexistente: actualizar (404)
+PUT {{Backend_HostAddress}}/api/Brand/9999
+Content-Type: application/json
+
+{
+  "id": 9999,
+  "name": "Fantasma"
+}
+
+### Id inexistente: eliminar (404)
+DELETE {{Backend_HostAddress}}/api/Brand/9999
+
+### Id inexistente: cervezas de la marca (404)
+GET {{Backend_HostAddress}}/api/Brand/9999/beers
+Accept: application/json
+
+### ---------- BRAND: conflicto (409) ----------
+
+### Crear una cerveza asociada a la marca 1
+POST {{Backend_HostAddress}}/api/Beer
+Content-Type: application/json
+
+{
+  "name": "Corona Light",
+  "brandId": 1,
+  "alcohol": 4.5
+}
+
+### Eliminar marca con cervezas asociadas (409)
+DELETE {{Backend_HostAddress}}/api/Brand/1
+
+### ---------- BRAND: eliminar sin cervezas (200) ----------
+
+### Crear marca sin cervezas
+POST {{Backend_HostAddress}}/api/Brand
+Content-Type: application/json
+
+{
+  "name": "Temporal"
+}
+
+### Eliminar la marca recien creada (ajustar el id)
+DELETE {{Backend_HostAddress}}/api/Brand/2
